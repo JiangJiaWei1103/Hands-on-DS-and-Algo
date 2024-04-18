@@ -48,7 +48,7 @@ def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) ->
 	"""Three-pointer solution w/ dummy node."""
 	if list1 is None or list2 is None:
 		return list1 if list1 is not None else list2
-
+	
 	dummy_head = ListNode()
 	p = dummy_head
 	p1, p2 = list1, list2
@@ -60,13 +60,13 @@ def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) ->
 		else:
 			new_node = ListNode(val=val2)
 			p2 = p2.next
-
+	
 		p.next = new_node
 		p = p.next
-
+	
 	# Merge the remaining part 
 	p.next = p1 if p1 is not None else p2
-
+	
 	return dummy_head.next
 ```
 * Time complexity: $O(n)$ (or $O(n+m)$?)
