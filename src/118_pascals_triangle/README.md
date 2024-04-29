@@ -57,7 +57,7 @@ def generate(numRows: int) -> List[List[int]]:
 	* Use a 2D array to store the triangle.
 	* The depth of the call stack is at most `numRows`.
 #### 3. Auxiliary `0`'s on Both Sides
-Add `0`'s to left and right sides and add up these two temporary arrays.
+Add `0`'s to left and right sides and add up these two temporary arrays.<br>
 [![118-pascals-triangle-drawio.png](https://i.postimg.cc/28DZDwVj/118-pascals-triangle-drawio.png)](https://postimg.cc/F1TRb0yw)
 ```python
 def generate(numRows: int) -> List[List[int]]:
