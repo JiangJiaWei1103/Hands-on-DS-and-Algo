@@ -15,9 +15,9 @@ To take course 1 you should have finished course 0. So it is possible.
 ### Idea
 #### 1. BFS - Kahn's Algorithm
 Find a possible topological sorting of the course graph. The core concept is summarized as follows,
-1. First, record all sources which have no incoming nodes (*i.e.,* `in_deg == 0`).
-2. For each course with `in_deg == 0`, safely remove it (think of it as a finished course) and decrease the number of prerequisites of all outgoing nodes (*i.e.,* `in_degs[nc_i] -= 1`).
-3. Add any outgoing node with `in_deg == 0` to **about-to-finish** queue `q` .
+1. First, record all sources which have no incoming nodes (*i.e.,* `n_prev == 0`).
+2. For each course with `n_prev == 0`, safely remove it (think of it as a finished course) and decrease the number of prerequisites of all outgoing nodes (*i.e.,* `n_prevs[nc_i] -= 1`).
+3. Add any outgoing node with `n_prev == 0` to **about-to-finish** queue `q` .
 4. Go back to 2. until `q` is empty.
 If there's any course left unfinished (*i.e.,* `numCourses != 0`), the course schedule is failed.
 
@@ -35,8 +35,8 @@ def canFinish(numCourses: int, prerequisites: List[List[int]]) -> bool:
     # Record all sources, having no prerequisites at start
     # Hence, these courses are good to take
     good_to_take = deque()
-    for c_i, in_deg in enumerate(n_prevs):
-        if in_deg == 0:
+    for c_i, n_prev in enumerate(n_prevs):
+        if n_prev == 0:
             good_to_take.append(c_i)
 
     while len(good_to_take) > 0:
