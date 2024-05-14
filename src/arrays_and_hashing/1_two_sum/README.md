@@ -48,6 +48,7 @@ For a sorted array, it's easy to find the number pair adding up to `target` by c
 1. If the current sum is equal to `target`, then the original indices of these two numbers are returned.
 2. If the current sum is greater than `target`, the **right** pointer should be moved **left** to decrease the value.
 3. If the current sum is less than `target`, the **left** pointer should be moved **right** to increase the value.
+
 Note that the original `nums` is **unsorted**, so we need to record the **original index** of each element to avoid information loss after sorting.
 ```python
 def twoSum(nums: List[int], target: int) -> List[int]:
