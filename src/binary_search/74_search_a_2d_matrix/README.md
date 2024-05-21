@@ -58,6 +58,8 @@ def searchMatrix(matrix: List[List[int]], target: int) -> bool:
     def _mid2pos(mid: int) -> Tuple[int, int]:
         """Convert middle pointer to the index pair."""
         return mid // n, mid % n
+        # or
+        # return divmod(mid, n)
 
     m, n = len(matrix), len(matrix[0])
     l, r = 0, m * n - 1
@@ -77,5 +79,6 @@ def searchMatrix(matrix: List[List[int]], target: int) -> bool:
 * Time complexity: $O(log\ (mn))$
 	* This algorithm can be seen of running binary search on a **flattened view** of the 2D matrix, which takes $O(log\ (mn))$ for $mn$ total elements.
 * Space complexity: $O(1)$
+#### 4. Separate BS - Row then Column
 ### Discussion
 * Did you observe that the 2D matrix can be viewed as a tree-like structure?
