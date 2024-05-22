@@ -39,6 +39,7 @@ def lengthOfLongestSubstring(s: str) -> int:
 Instead of finding the longest substrings for each character iteratively, we can think of the whole process as expanding and shrinking a window (*i.e.,* a substring) alternatively,
 1. Keep expanding the window if no any duplicate is encountered.
 2. When a duplicated character is met, keep shrinking the window **until this specific duplicated character is removed**.
+
 Concretely speaking, we use a set to determine if any duplicate is encountered.
 ```python
 def lengthOfLongestSubstring(s: str) -> int:
