@@ -61,8 +61,9 @@ def maxProfit(prices: List[int]) -> int:
 Observing the recurrence defined in idea 2, we know that the maximum profit till day $d$ depends only on the information of days $d$ and $d-1$. Hence, we can further optimize space complexity by using two variables only,
 1. `max_till_d`: The maximum profit till day $d$.
 2. `max_profit`: The global maximum profit.
-<br>
-[![121-2-drawio.png](https://i.postimg.cc/RV1sFhWH/121-2-drawio.png)](https://postimg.cc/PPxzVtzX)
+
+[![121-2-drawio.png](https://i.postimg.cc/mkfvqYV7/121-2-drawio.png)](https://postimg.cc/Hczv87qL)
+
 ```python
 def maxProfit(prices: List[int]) -> int:
     max_profit = 0 
@@ -79,6 +80,7 @@ def maxProfit(prices: List[int]) -> int:
 #### 4. Two Pointers - Lowest Price Anchor
 Fix the lowest price pointer to explore the highest profit within each interval.<br>
 [![121-best-time-to-buy-and-sell-stock-drawio.png](https://i.postimg.cc/CKpJw4gF/121-best-time-to-buy-and-sell-stock-drawio.png)](https://postimg.cc/QFScb1CP)
+
 ```python
 def maxProfit(prices: List[int]) -> int:
     lowest = 0 
