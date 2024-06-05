@@ -38,8 +38,8 @@ def subsetsWithDup(nums: List[int]) -> List[List[int]]:
 	* The number of function calls in the fully expanded binary tree is bounded by $O(2^n)$.
 	* Sorting each candidate subset takes $O(n\ log\ n)$.
 	* Each copy operation takes $O(n)$.
-* Space complexity: $O(2^n)$
-	* The result list storing the power set takes $O(2^n)$.
+* Space complexity: $O(n * 2^n)$
+	* The result list storing the power set takes $O(n * 2^n)$.
 	* The depth of call stack takes $O(n)$.
 #### 2. Backtracking - DFS
 To avoid duplicated candidate subset generation, we impose a restriction on the elements to add at the next level. To be concrete, it's about the choice of the **start point** in `nums`. This time, we use a **never-lookback** policy, which considers only elements **after** the current visited one as elements to add.
@@ -65,8 +65,8 @@ def subsetsWithDup(nums: List[int]) -> List[List[int]]:
 	* The number of function calls in this binary tree is exactly $2^n$.
 	* Sorting each candidate subset takes $O(n\ log\ n)$.
 	* Each copy operation takes $O(n)$.
-* Space complexity: $O(2^n)$
-	* The result list storing the power set takes $O(2^n)$.
+* Space complexity: $O(n * 2^n)$
+	* The result list storing the power set takes $O(n * 2^n)$.
 	* The depth of call stack takes $O(n)$.
 #### 3. Backtracking - Optimized DFS
 As shown in the figure above, we can observe that there still exist **duplicated branches** that can be eliminated to reduce computational cost. The reason why these branches exist is that `nums` contains duplicated elements. The solution is quite intuitive. We only need to skip the duplicated elements and take unique ones into consideration.<br>
@@ -97,7 +97,7 @@ def subsetsWithDup(nums: List[int]) -> List[List[int]]:
 	* Sorting `nums` takes $O(n\ log\ n)$.
 	* The number of function calls in this binary tree is at most $2^n$.
 	* Each copy operation takes $O(n)$.
-* Space complexity: $O(2^n)$
-	* The result list storing the power set takes $O(2^n)$.
+* Space complexity: $O(n * 2^n)$
+	* The result list storing the power set takes $O(n * 2^n)$.
 	* The depth of call stack takes $O(n)$.
 #### 4. BFS
