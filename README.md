@@ -1,4 +1,4 @@
-# Grind-LeetCode
-Record my own journey of grinding LeetCode.
+# Hands-on-DS-and-Algo
+As titled.
 
 ## Overview
