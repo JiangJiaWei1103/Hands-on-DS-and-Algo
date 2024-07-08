@@ -50,9 +50,9 @@ class MinStack:
     def getMin(self) -> int:
         return self.min_heap[0] 
 ```
-* Time complexity:
+* Time complexity: Suppose the maximum number of elements in the stack is $n$.
 	* `push` takes $O(log\ n)$ to heapify.
-	* `pop` take $O(n)$ to clone and $O(log\ n)$ to heapify.
+	* `pop` take $O(n)$ to clone and $O(n)$ to heapify from scratch.
 * Space complexity: $O(n)$
 	* A min heap maintaining the value ordering takes $O(n)$.
 #### 2. Auxiliary Stack as Min Tracker
