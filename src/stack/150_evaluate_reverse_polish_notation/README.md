@@ -56,9 +56,10 @@ def evalRPN(tokens: List[str]) -> int:
     return oprd_stack[0]
 ```
 * Time complexity: $O(n)$
-	* Each token is visited once.
+	* Visiting each token of the entire token list takes $O(n)$.
 * Space complexity: $O(n)$
 	* A stack storing visited operands takes $O(n)$.
-
+##### Comment
+* Note that the python expression `//` is used to **round down** the evaluated result, which isn't equal the rounding behavior of `int()` (which takes the integer part of the value).
 ### Discussion
 *  Can we solve the problem through recursion?
