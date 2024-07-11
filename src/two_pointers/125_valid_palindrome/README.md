@@ -15,7 +15,7 @@ Explanation: "amanaplanacanalpanama" is a palindrome.
 ```
 ### Idea
 #### 1. Brute-force
-The basic idea is to clean the string first and compare the cleaned string with its own reversed representation.
+The most intuitive method is to clean the string first and only retain the characters that are either letters or numbers. After cleaning, we compare the string with its own reversed counterpart.
 ```python
 def isPalindrome(s: str) -> bool:
     # Clean the string forward
@@ -30,6 +30,7 @@ def isPalindrome(s: str) -> bool:
 ```
 * Time complexity: $O(n)$
 	* Both forward and backward traversal take $O(n)$.
+	* The final element-wise comparison also takes $O(n)$.
 * Space complexity: $O(n)$
 	* Two lists storing two views of the cleaned string take $O(n)$.
 #### 2. Two Pointers - Clean First
@@ -52,7 +53,7 @@ def isPalindrome(s: str) -> bool:
 * Space complexity: $O(n)$
 	* A list storing the cleaned string take $O(n)$.
 #### 3. Two Pointers
-We can further reduce the space complexity by **cleaning the string on the fly**, instead of preprocessing. The concept is that a character can be skipped (*i.e.,* move the pointer one step ahead) if it's not a number or an alphabet. That is, we keep moving the pointers until a valid comparison can be done.
+We can further reduce the space complexity by **cleaning the string on the fly**, instead of preprocessing. The core concept is to iteratively find the next **comparable** character (*i.e.,* either a letter or a number).
 ```python
 def isPalindrome(s: str) -> bool:
     l, r = 0, len(s) - 1
@@ -71,7 +72,7 @@ def isPalindrome(s: str) -> bool:
     return True
 ```
 * Time complexity: $O(n)$
-	* Each character is visited only once.
+	* Visiting each character in the string takes $O(n)$ in total.
 * Space complexity: $O(1)$
 ##### Comment
-* We can also use inner while loops to directly move both left and right pointers to the next valid positions to compare. 
+* We can also use inner while loops to directly move both left and right pointers to the next valid positions to compare. However, the readability is poor.
