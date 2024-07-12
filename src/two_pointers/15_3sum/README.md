@@ -21,91 +21,47 @@ Notice that the order of the output and the order of the triplets does not matte
 #### 1. Brute-force
 The most intuitive solution is to **enumerate** all possible triplets.
 ```python
-
 ```
 * Time complexity: $O(n^3)$
 	* Enumerating all possible triplets `[i, j, k]` takes $O(n^3)$.
-* Space complexity: $O()$
+* Space complexity: $O(1)$
 #### 2. Sorting + Two Pointers
-This problem can be viewed as an extension of [[Hack-the-Algo-and-DS/Grind-LeetCode/src/arrays_and_hashing/1_two_sum/README|1_two_sum]]. Concretely speaking, we **dynamically set a new target** and use two pointers to find the triplet. The key difference is that the answer isn't unique.<br>
+This problem can be viewed as an extension of [[Hack-the-Algo-and-DS/Grind-LeetCode/src/two_pointers/167_two_sum_ii_input_array_is_sorted/README|167. Two Sum II]]. Concretely speaking, we **dynamically set a new target as a pivot** and use two pointers to find all possible triplets. The key difference is that the answer isn't unique.<br>
 The process is summarized as follows,
 1. Sort the array in **non-decreasing order**.
-2. For each unique **two-sum target**, represented by `0 - nums[i]`, find all unique element pairs adding up to this target.
-	* These two elements are tracked by two pointers.
+2. For each pivot, find all triplets adding up to zero.
 
-There exist many techniques to speedup the algorithm, which are summarized as follows,
-1. If `nums[i] > 0`, we can directly stop the process because all elements on the right side of `nums[i]` must be greater than or equal to `nums[i]`.
-2. When we record a unique triplet, we can skip all duplicated elements without repetitively checking the same triplet.
+There's techniques to somewhat speedup the algorithm. If `nums[pivot] > 0`, we can directly stop the algorithm because all elements on the right side of `nums[pivot]` must be greater than or equal to `nums[pivot]`.
 ```python
 def threeSum(nums: List[int]) -> List[List[int]]:
     nums.sort()
-    i = 0
-    triplets = []
-    while i <= len(nums) - 2:
-        cur_target = 0 - nums[i]
-        if cur_target < 0:
-            # All elements on the right side of position i must be pos
-            break
+    res = []
+    for pivot, num in enumerate(nums):
+        if pivot > 0 and num == nums[pivot - 1]:
+            continue
 
-        l, r = i + 1, len(nums) - 1
+        l, r = pivot + 1, len(nums) - 1
         while l < r:
-            l_num, r_num = nums[l], nums[r]
-            if l_num + r_num == cur_target:
-                triplets.append([nums[i], l_num, r_num])
-
-                # Find the next unique elements
-                while l < len(nums) and nums[l] == l_num:
-                    l += 1
-                while r > i and nums[r] == r_num:
-                    r -= 1
-                continue
-
-            while l < r and nums[l] + r_num < cur_target:
+            cur_sum = num + nums[l] + nums[r]
+            if cur_sum < 0:
                 l += 1
-                continue
-
-            while r > l and l_num + nums[r] > cur_target:
-                r -= 1
-
-        while i < len(nums) and 0 - nums[i] == cur_target:
-            # Skip duplicated targets
-            i += 1
-
-    return triplets
-
-
-def threeSum(nums: List[int]) -> List[List[int]]:
-    nums.sort()
-    i = 0
-    triplets = []
-    while i <= len(nums) - 2:
-        cur_target = 0 - nums[i]
-        if cur_target < 0:
-            break
-
-        l, r = i + 1, len(nums) - 1
-        while l < r:
-            l_num, r_num = nums[l], nums[r]
-            if l_num + r_num < cur_target:
-                l += 1
-            elif l_num + r_num > cur_target:
+            elif cur_sum > 0:
                 r -= 1
             else:
-                triplets.append([nums[i], l_num, r_num])
-                while l < r and nums[l] == l_num:
+                res.append([num, nums[l], nums[r]])
+                l += 1
+                while l < r and nums[l] == nums[l-1]:
                     l += 1
-                while r > l and nums[r] == r_num:
-                    r -= 1
 
-        while i < len(nums) and 0 - nums[i] == cur_target:
-            i += 1
-
-    return triplets
+    return res
 ```
 * Time complexity: $O(n^2)$
 	* Sorting takes $O(n\ log\ n)$.
 	* For each target, we need to search all possible triplets, which takes $O(n^2)$.
-* Space complexity: $O()$
+* Space complexity: $O(1)$
+	* There's no explicit auxiliary space. However, the aux space might be used implicitly by the sorting algorithm.
+##### Comment
+* Note that we only update one pointer when we find a valid triplet because the `if-else` condition can handle the other one automatically.
 ### Discussion
-* Can we solve this problem without sorting?
-* What's the space complexity of output triplets?
+* Can we solve this problem without sorting? Does a hash map help? How to avoid a linear scan on output triplets to avoid duplicates?
+	* Running two sum with a hash map $n$ times takes TC $O(n^2)$ and SC $O(n)$.
