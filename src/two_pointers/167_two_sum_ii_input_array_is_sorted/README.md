@@ -20,8 +20,8 @@ For the brute-force approach and hash map solution, please refer to [[Hack-the-A
 #### 1. Two Pointers
 The key information is that the input array is already sorted in **non-decreasing order**. For a sorted array, it's intuitive to use two pointers to continuously check the current sum. There are three conditions to consider,
 1. If the current sum is equal to `target`, return the current  indices.
-2. If the current sum is greater than `target`, move the **right** pointer **leftward** to **decrease** the sum.
-3. If the current sum is less than `target`, move the **left** pointer **rightward** to **increase** the sum.
+2. If the current sum is greater than `target`, move the **right** pointer **leftward** to **decrease** the expected sum.
+3. If the current sum is less than `target`, move the **left** pointer **rightward** to **increase** the expected sum.
 ```python
 def twoSum(numbers: List[int], target: int) -> List[int]:
     l, r = 0, len(numbers) - 1
@@ -47,8 +47,9 @@ def twoSum(numbers: List[int], target: int) -> List[int]:
     return [l+1, r+1]
 ```
 * Time complexity: $O(n)$
-	* Each number is visited at most once.
+	* Scanning the entire array takes $O(n)$.
 * Space complexity: $O(1)$
 ### Discussion
 * Can we solve the problem with the concept of **binary search**?
+	* Running binary search for the complement of each element takes $O(n\ log\ n)$.
 * Because there exist constraints on the range of elements in `numbers` and `target`, can we state that the space complexity is **constant** when using a hash map?
