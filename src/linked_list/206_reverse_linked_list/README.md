@@ -14,7 +14,7 @@ Output: [5, 4, 3, 2, 1]
 ### Idea
 #### 1. Iterative
 Reversing a linked list is just a simple process of repointing `next` pointer of each node. The challenge is how we can move forward without losing track. To handle this issue, we use a `nxt` pointer to flag the next position to go, as illustrated below. To be concrete, we need to do the following operations for each iteration,
-1. `nxt = cur.next`: Record the next position to go.
+1. `nxt = cur.next`: Record the next position to go, because repointing of `cur.next` will hinder `cur` from moving forward.
 2. `cur.next = prev`: Repoint the `next` pointer of current node to the previous one.
 3. `prev = cur`: Move `prev` pointer forward.
 4. `cur = next`: Move `cur` pointer forward.
@@ -40,7 +40,7 @@ def reverseList(head: Optional[ListNode]) -> Optional[ListNode]:
     return prev
 ```
 * Time complexity: $O(n)$
-	* Each node is visited once.
+	* Visiting each node in the linked list takes $O(n)$.
 * Space complexity: $O(1)$
 ##### Comment
 * To avoid handling `head` separately, we can initialize `prev, cur = None, head`.
@@ -60,7 +60,7 @@ def reverseList(head: Optional[ListNode]) -> Optional[ListNode]:
     
     return prev  
 ```
-* Leveraging the variable swapping technique, we can make the solution more concise. The logic behind the scene is that rhs is evaluated first, so a tuple of variables is created at the first hand.
+* Leveraging the **variable swapping** technique, we can make the solution more concise. The logic behind the scene is that rhs is evaluated first, so a tuple of variables is created at the first hand.
 ```python
 def reverseList(head: Optional[ListNode]) -> Optional[ListNode]:
     # if head is None:
@@ -89,6 +89,6 @@ def reverseList(head: Optional[ListNode]) -> Optional[ListNode]:
     return new_head 
 ```
 * Time complexity: $O(n)$
-	* Each node is visited once.
+	* Visiting each node in the linked list takes $O(n)$.
 * Space complexity: $O(n)$
 	* The depth of call stack takes $O(n)$.
