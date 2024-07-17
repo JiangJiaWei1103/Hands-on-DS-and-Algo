@@ -15,8 +15,19 @@ Input: head = [1, 2, 3, 4, 5], n = 2
 Output: [1, 2, 3, 5]
 ```
 ### Idea
-#### 1. Two  Passes
-The most intuitive solution is to traverse the linked list twice,
+#### 1. Reverse
+To use $n$ in a more intuitive way, we can make the `n`-th node from the end accessible in a forward view. The process is summarized as follows,
+1. Reverse the linked list.
+2. Point the `next` pointer of `n-1`-th node to `n+1`-th node.
+3. Reverse the linked list again and return the original `head`.
+```python
+# Ignore
+```
+* Time complexity: $O(n)$
+	* All of the 3 steps can be done in $O(n)$.
+* Space complexity: $O(1)$
+#### 2. Derive Length - Two Pass
+Instead of reversing, the length of the linked list is an useful information to position the specified node. The two-pass process is summarized as follows,
 1. Derive length of the linked list, so the node to be removed is located.
 2. Remove the specified node by repointing the `next` pointer of `n+1` node to `n-1` node.
 ```python
@@ -25,15 +36,15 @@ The most intuitive solution is to traverse the linked list twice,
 * Time complexity: $O(n)$
 	* Each traversal takes $O(n)$.
 * Space complexity: $O(1)$
-#### 2. One Pass
-To avoid traversing the linked list twice, we can use slow and fast pointers to help us determine in which half the `n`-th node is located. The concept is summarized as follows,
+#### 3. Derive Length - One Pass
+To avoid traversing the linked list twice, we can use slow and fast pointers to help determine which half the `n`-th node is located in. The concept is summarized as follows,
 1. Use slow and fast pointers to derive the middle point.
 2. Derive the length of the linked list.
 3. Initialize the pointer based on the location of the node to remove.
 	*  Either start from the first or the second half.
 4. Remove the `n`-th node.
 
-This process looks quite annoying, let's discuss another solution in idea 3.
+This process looks quite annoying, let's discuss another solution in idea 4.
 ```python
 def removeNthFromEnd(head: Optional[ListNode], n: int) -> Optional[ListNode]:
     if head is None or head.next is None:
@@ -62,48 +73,51 @@ def removeNthFromEnd(head: Optional[ListNode], n: int) -> Optional[ListNode]:
 * Time complexity: $O(n)$
 	* Locating the middle point then traversing only a half of the linked list takes $O(n)$.
 * Space complexity: $O(1)$
-#### 3. Concise One Pass
-We find that `n` is actually the **offset** of the node to remove and the tail (`None`) of the linked list. Hence, the core idea is to use two pointers which has a gap to locate the node to remove. We have two choices here,
-1. `offset == n + 1` represents the gap between the node before the one to remove and `None`.
-2. `offset == n` represents the gap between the node before the one to remove and the last node.
+#### 4. One Pass
+Removing the `n`-th node is actually repointing the `next` pointer of the `n+1`-th node to `n-1`-th. Also, the gap between the `n+1`-th node and the tail `None` is exactly equal to `n`. With these properties, the one-pass solution can be summarized as follows,
+1. Create two pointers `left` and `right` with a gap `n`. 
+2. Move `left` and `right` forward until `right` is equal to `None`.
+	* `left` now locates the `n+1`-th node.
+3. Remove the `n`-th node.
 
-To be concrete, we need to repoint `next` pointer of `n+1`-th node to `n-1`-th.
-
-[![19.png](https://i.postimg.cc/d3wB1fRq/19.png)](https://postimg.cc/bDVbV3FM)
-
+In addition, a dummy node is added to handle the edge case in which the first node is removed. Note that, we can remove only the first node if the linked list has only one node.
 ```python
 def removeNthFromEnd(head: Optional[ListNode], n: int) -> Optional[ListNode]:
     dummy = ListNode(0, next=head)
     l, r = dummy, head
-    while n > 0:
+    gap = 0
+    while gap < n:
         r = r.next
-        n -= 1
+        gap += 1
 
     while r is not None:
         l = l.next
-        r = r.next
+        r = r.next 
     l.next = l.next.next
 
-    return dummy.next
+    return dummy.next 
 ```
 * Time complexity: $O(n)$
-	* Traversing the linked list exactly once.
+	* Visiting each node once takes $O(n)$.
 * Space complexity: $O(1)$
 ##### Comment
 * This solution can also be implemented without the dummy node. Note that one edge case in which **the first node** is removed should be handled.
 ```python
 def removeNthFromEnd(head: Optional[ListNode], n: int) -> Optional[ListNode]:
-    l, r = head, head
-    while n > 0:
+    l, r = head, head.next
+    gap = 0
+    while gap < n and r is not None:
         r = r.next
-        n -= 1
-    if r is None:
+        gap += 1
+    
+    if r is None and gap < n:
+        # Remove the first node
         return head.next
 
-    while r.next is not None:
+    while r is not None:
         l = l.next
-        r = r.next
+        r = r.next 
     l.next = l.next.next
 
-    return head
+    return head 
 ```
