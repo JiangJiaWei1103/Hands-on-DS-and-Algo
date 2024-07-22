@@ -15,74 +15,54 @@ Input: piles = [3, 6, 7, 11], h = 8
 Output: 4
 ```
 ### Idea
+There are some key points to keep in mind before solving this problem,
+1. `h >= len(piles)`: If the number of piles is greater than the time limit, it's impossible for the koko to finish all piles.
+2. `1 <= k <= max(piles)`: The eating rate `k` is bounded by `[1, max(piles)]`.
+	* The slowest rate is one banana per hour, which takes `sum(piles)` to finish.
+	* The fastest rate is `max(piles)` bananas per hour, which takes `len(piles)` to finish.
 #### 1. Brute-force (TLE)
-The most intuitive solution is to try all possible eating speeds **from the slowest** (*i.e.,* 1 banana per hour) **to the fastest** (*i.e.,* the most bananas per hour). Then, we can guarantee the first speed that the koko can finish all bananas is the minimum one.
+The most intuitive solution is to try all possible eating speeds **from the slowest** (*i.e.,* 1 banana per hour) **to the fastest** (*i.e.,* the maximum pile per hour). Then, we can guarantee the first speed that the koko can finish all bananas is the minimum one.
 ```python
 def minEatingSpeed(piles: List[int], h: int) -> int:
-    n_bananas_max = max(piles)
-    for k in range(1, n_bananas_max + 1):
-        n_hrs = 0
+    max_pile = max(piles)
+    for k in range(1, max_pile+1):
+        t = 0
         for pile in piles:
-            n_hrs += (pile - 1) // k + 1
+            t += (pile - 1) // k + 1  # or math.ceil(pile / k)
 
-        if n_hrs <= h:
+        if t <= h:
             return k
 ```
-* Time complexity: $O(mn)$, where $m$ is the number of bananas in the highest pile and $n$ is the number of piles.
-	* Finding the pile with the most bananas takes $O(n)$.
-	* Trying from the slowest speed to the fastest one takes $O(mn)$.
+* Time complexity: $O(mn)$, where $m$ is the number of bananas in the maximum pile and $n$ is the number of piles.
+	* Trying each eating rate from the slowest to the fastest takes $O(m)$.
+	* For each eating rate, calculating the total time to finish takes $O(n)$, hence $O(mn)$ in total.
 * Space complexity: $O(1)$
 #### 2. Binary Search on Speed
-Instead of trying all possible speeds, we can use the concept of binary search. There are two conditions summarized as follows,
-1. If the koko can finish all bananas with the current speed `mid`,
-	1. Record the current speed as a candidate.
-	2. Update the **right** pointer to **slow down** eating rate.
-2. If the koko can't finish with the current speed `mid`, update the **left** pointer to **speed up** eating rate.
+Instead of trying all possible speeds, we can use the concept of binary search. The process merely determines whether the koko should speedup or slowdown. There are two conditions,
+1. If the koko **can** finish all bananas with the current speed `k`,
+	1. Update `min_k`: Record the slower eating rate.
+	2. Slowdown: Move **right** pointer to the left side of `k`.
+2. If the koko **can't** finish with the current speed `k`, speedup by moving **left** pointer to the right side of `k`.
 ```python
 def minEatingSpeed(piles: List[int], h: int) -> int:
-    def _cal_time_to_finish(k: int) -> int:
-        """Calculate the number of hours to finish all bananas."""
-        n_hrs = 0
-        for pile in piles:
-            n_hrs += (pile - 1) // k + 1
-
-        return n_hrs
-
     l, r = 1, max(piles)
-    k = r
+    min_k = r  # Initialize with the fastest eating rate
     while l <= r:
-        # The middle element is the candidate k
-        mid = (l + r) // 2
-
-        n_hrs = _cal_time_to_finish(mid)
-        if n_hrs <= h:
-            k = mid
-            r = mid - 1
-        else:
-            l = mid + 1
-
-    return k
-
-
-def minEatingSpeed(piles: List[int], h: int) -> int:
-    l, r = 1, max(piles)
-    k = r
-    while l <= r:
-        # Derive candidate k and the corresponding time to finish
-        mid = (l + r) // 2
-        n_hrs = 0
+        # Derive the time to finish all piles for the current rate k
+        k = (l + r) // 2
+        t = 0
         for pile in piles:
-            n_hrs += (pile - 1) // mid + 1
-
-        if n_hrs <= h:
-            k = mid
-            r = mid - 1
+            t += (pile - 1) // k + 1  # or math.ceil(pile / k)
+        
+        if t <= h:
+            min_k = min(min_k, k)
+            r = k - 1
         else:
-            l = mid + 1
-
-    return k
+            l = k + 1
+    
+    return min_k 
 ```
 * Time complexity: $O(n\ log\ m)$, where $m$ is the number of bananas in the highest pile and $n$ is the number of piles.
-	* Finding the pile with the most bananas takes $O(n)$.
-	* Running binary search on possible speeds helps reduce time complexity from $O(mn)$ to $O(n\ log\ m)$.
+	* Running binary search on possible speeds helps reduce time complexity from $O(m)$ to $O(log\ m)$.
+	* For each eating rate, calculating the total time to finish takes $O(n)$, hence $O(n\ log\ m)$ in total.
 * Space complexity: $O(1)$
