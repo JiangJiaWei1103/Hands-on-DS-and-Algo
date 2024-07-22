@@ -17,20 +17,22 @@ Output: 4
 Explanation: 9 exists in nums and its index is 4
 ```
 ### Idea
-The core idea of binary search is that we can keep splitting the input array **in half**.
+The core idea of binary search is to keep halving the input array until the base case is triggered. There exist two base cases,
+1. `target` is found, then the corresponding index is returned.
+2. `target` doesn't exist in `nums`, then `-1` is returned.
 #### 1. Iterative
-For iterative solution, we use two pointers (*i.e.,* left and right) as the boundaries to keep shrinking the array chunk at which we're looking.
+For iterative solution, we use two pointers (*i.e.,* left/right or low/high) as the boundaries of the current array chunk to search.
 ```python
 def search(nums: List[int], target: int) -> int:
     l, r = 0, len(nums) - 1
     while l <= r:
-        m = (l + r) // 2
-        if nums[m] == target:
-            return m
-        elif nums[m] < target:
-            l = m + 1
+        mid = (l + r) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] > target:
+            r = mid - 1
         else:
-            r = m - 1
+            l = mid + 1
 
     return -1
 ```
@@ -38,23 +40,22 @@ def search(nums: List[int], target: int) -> int:
 	* As binary search keeps halving the input array, it takes $O(log\ n)$ to find `target`.
 * Space complexity: $O(1)$
 #### 2. Recursive
-Similar to iterative solution, the recursive also keeps halving the input array. Note that we need to define the base case to avoid infinite loop. When the left pointer is greater than the right one, it means that `target` can't be found in `nums`.
+Similar to iterative solution, the recursion also keeps halving the input array. Note that we need to define the base case (while is handled by the `while` condition in the iterative solution) to avoid infinite loop. When the left pointer is greater than the right one, it means that `target` doesn't exist in `nums`.
 ```python
 def search(nums: List[int], target: int) -> int:
-    def _search(l: int, r: int) -> int:
-        # Base case
+    def _dfs(l: int, r: int) -> int:
         if l > r:
             return -1
 
-        m = (l + r) // 2
-        if nums[m] == target:
-            return m
-        elif nums[m] < target:
-            return _search(m + 1, r)
+        mid = (l + r) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] > target:
+            return _dfs(l, mid - 1)
         else:
-            return _search(l, m - 1)
-        
-    return _search(0, len(nums) - 1)
+            return _dfs(mid + 1, r)
+
+    return _dfs(0, len(nums) - 1)
 ```
 * Time complexity: $O(log\ n)$
 	* As binary search keeps halving the input array, it takes $O(log\ n)$ to find `target`.
