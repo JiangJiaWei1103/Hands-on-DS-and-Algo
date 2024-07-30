@@ -37,17 +37,18 @@ def invertTree(root: Optional[TreeNode]) -> Optional[TreeNode]:
 * Time complexity: $O(n)$
 	* Visiting every node in the binary tree takes $O(n)$.
 * Space complexity: $O(h)$, where $h$ is the height of the binary tree.
-	* The worst case happens when the binary tree is extremely unbalanced, which has a call stack of depth $n$. Hence, it takes $O(n)$ space complexity.
+	* The worst case happens when the binary tree is **skewed**, which has a call stack of depth $n$. Hence, it takes $O(n)$ space complexity.
+		* Stack overflow might occur.
 #### 2. Iterative - BFS
 In addition to the recursive approach, we can also solve the problem iteratively by **level-order traversal**. Concretely speaking, a queue (or a stack) is used as an auxiliary data structure to record nodes level by level.<br>
-Both queue and stack can be used, because we swap left and right children of each visited node first. At this point, there's no difference to handle the swapped left child first or the right first.
+Both queue and stack can be used, because we swap left and right children of each visited node first. Hence, the results are the same no matter which child is handled next.
 ```python
 def invertTree(root: Optional[TreeNode]) -> Optional[TreeNode]:
     if root is None:
         return None
 
     q = deque([root])
-    while len(q) != 0:
+    while len(q) > 0:
         visited = q.popleft()
         visited.left, visited.right = visited.right, visited.left
         if visited.left is not None:
@@ -60,4 +61,4 @@ def invertTree(root: Optional[TreeNode]) -> Optional[TreeNode]:
 * Time complexity: $O(n)$
 	* Visiting every node in the binary tree takes $O(n)$.
 * Space complexity: $O(n)$
-	* A queue storing nodes level by level takes $O(n)$.
+	* A queue storing nodes level by level takes $O(n)$. The worst case occurs when the binary tree is **perfect**, which has $\frac{n+1}{2}$ leaves.
