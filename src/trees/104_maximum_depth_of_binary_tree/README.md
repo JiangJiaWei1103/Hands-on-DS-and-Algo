@@ -13,29 +13,30 @@ Output: 3
 ```
 ### Idea
 #### 1. Iterative - BFS
-Because we need to derive the height of a binary tree, the most intuitive solution on my mind is **level-order traversal**. Through traversing the binary tree level by level, we keep incrementing the depth by 1 if the current level is completed.
+Because we need to derive the height of a binary tree, the most intuitive solution on my mind is **level-order traversal**. Through traversing the binary tree level by level, we keep incrementing the depth by 1 if the current level is completed. To be concrete, we treat each level as a group during traversal.
 ```python
 def maxDepth(root: Optional[TreeNode]) -> int:
     if root is None:
         return 0
-    
+
+    depth = 0
     q = deque([root])
-    max_depth = 0
-    while len(q) != 0:
-        for _ in range(len(q)):
+    while len(q) > 0:
+        for i in range(len(q)):
             visited = q.popleft()
             if visited.left is not None:
                 q.append(visited.left)
             if visited.right is not None:
                 q.append(visited.right)
-        max_depth += 1
 
-    return max_depth
+        depth += 1
+
+    return depth
 ```
 * Time complexity: $O(n)$
 	* Visiting each node in the binary tree takes $O(n)$.
 * Space complexity: $O(n)$
-	* A queue storing nodes level by level takes 𝑂(𝑛).
+	* A queue storing nodes level by level takes 𝑂(𝑛). The worst case occurs when the binary tree is **perfect**, which has $\frac{n+1}{2}$ leaves.
 #### 2. Recursive - DFS
 The height of a binary tree can be formulated by the following relationship,
 ```
@@ -54,15 +55,20 @@ def maxDepth(root: Optional[TreeNode]) -> int:
     return max_depth
 
 
-def maxDepth(self, root: Optional[TreeNode]) -> int:
+def maxDepth(root: Optional[TreeNode]) -> int:
     if root is None:
         return 0
 
-    return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))
+    # Or, directly return it
+    depth = 1 + max(maxDepth(root.left), maxDepth(root.right)) 
+
+    return depth
 ```
 * Time complexity: $O(n)$
 	* Visiting each node in the binary tree takes $O(n)$.
 * Space complexity: 𝑂(ℎ), where ℎ is the height of the binary tree.
-	* The worst case happens when the binary tree is extremely unbalanced, which has a call stack of depth 𝑛. Hence, it takes 𝑂(𝑛) space complexity.
+	* The worst case happens when the binary tree is **skewed**, which has a call stack of depth 𝑛. Hence, it takes 𝑂(𝑛) space complexity.
 ### References
 * [Queue in Python](https://www.geeksforgeeks.org/queue-in-python/)
+* [What is the difference between depth and height in a tree?](https://stackoverflow.com/questions/2603692/what-is-the-difference-between-depth-and-height-in-a-tree)
+	* Note the definition of depth and height.
