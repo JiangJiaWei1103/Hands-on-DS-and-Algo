@@ -11,7 +11,7 @@
 	* `p != q`
 	* `p` and `q` will exist in the BST.
 ### Output
-The lowest common ancestor (LCA) of the given node pair, `p` and `q`.
+The lowest common ancestor (LCA) of two nodes.
 ### Example
 ```
 Input: root = [6, 2, 8, 0, 4, 7, 9, null, null, 3, 5], p = 2, q = 8
@@ -19,7 +19,11 @@ Output: 6
 Explanation: The LCA of nodes 2 and 8 is 6.
 ```
 ### Idea
-#### 1. DFS w/o BST Property
+Instead of taking $O(n)$ to visit each node in the BST, we can further reduce the time complexity to the height of the BST by leveraging BST properties, which are summarized as follows,
+1. If both values of `p` and `q` are **smaller** than the root, return the LCA from the **left** child.
+2. If both values of `p` and `q` are **greater** than the root, return the LCA from the **right** child.
+3. If one value is smaller than the root and the other is greater, the root is the LCA.
+#### 1. (Deprecated) See [[Hack-the-Algo-and-DS/Grind-LeetCode/src/trees/236_lowest_common_ancestor_of_a_binary_tree/README|236]] for Detailed Solution
 The solution can be thought of as a child-searching process by an ancestor (*i.e.,* the current root). Below illustrates how searching looks like, and there are 4 conditions to consider,
 1. `root in {p, q}`: If an ancestor itself is one of the nodes, `root` is the LCA.
 	* *e.g.,* `2` in the figure.
@@ -52,21 +56,12 @@ def lowestCommonAncestor(root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'Tre
 	* Visiting each node in the binary search tree takes $O(n)$.
 * Space complexity: $O(h)$, where $h$ is the height of the BST.
 	* The worst case occurs when the BST is skewed, in which the depth of call stack takes $O(h) \approx O(n)$.
-#### 2. DFS w/ BST Property
-Instead of taking $O(n)$ to visit each node in the BST, we can further reduce the time complexity by leveraging BST properties.<br>
-To be concrete, we can continue to refine 4 conditions discussed in idea 1,
-1. `root in {p, q}`: If an ancestor itself is one of the nodes, `root` is the LCA.
-2. `p.val < root.val and q.val < root.val`: If values of both `p` and `q` are **smaller** than `root`, the LCA must come from the **left** subtree.
-3. `p.val > root.val and q.val > root.val`: If values of both `p` and `q` are **greater** than `root`, the LCA must come from the **right** subtree.
-4. `p.val < root.val < q.val or p.val > root.val > q.val`: `root`'s value is the **middle** value, `root` is the LCA.
-
-Again, `None` base case should be considered.
+#### 2. Recursive - DFS
+The base case defined in the first implementation can be handled by the third condition. Note that we don't need to worry about the case in which the searching goes down to the leaf `None`, because the LCA will be returned beforehand.
 ```python
 def lowestCommonAncestor(root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
     if root in {p, q}:
-        return root 
-    if root is None:
-        return None
+        return root
 
     if p.val < root.val and q.val < root.val:
         return lowestCommonAncestor(root.left, p, q)
@@ -74,17 +69,8 @@ def lowestCommonAncestor(root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'Tre
         return lowestCommonAncestor(root.right, p, q)
     else:
         return root
-```
-* Time complexity: $O(h)$, where $h$ is the height of the BST.
-	* Halving the binary search tree during searching takes $O(log\ n)$.
-	* The skewed BST still takes $O(n)$.
-* Space complexity: $O(h)$, where $h$ is the height of the BST.
-	* The worst case occurs when the BST is skewed, in which the depth of call stack takes $O(h) \approx O(n)$.
-##### Comment
-* Diving deeper into the solution above, we can make the implementation more concise by combining cases.
-	* The 1st and 4th conditions can be combined.
-	* Because we return the LCA directly when the last condition is triggered, we don't need to worry about touching `None` of leaves.
-```python
+
+
 def lowestCommonAncestor(root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
     if p.val < root.val and q.val < root.val:
         return lowestCommonAncestor(root.left, p, q)
@@ -93,20 +79,35 @@ def lowestCommonAncestor(root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'Tre
     else:
         return root
 ```
+* Time complexity: $O(h)$, where $h$ is the height of the BST.
+	* Halving the binary search tree during searching takes $O(log\ n)$ in total.
+	* The worst case happens when the BST is **skewed**, which takes $O(n)$ in total.
+* Space complexity: $O(h)$, where $h$ is the height of the BST.
+	* The worst case occurs when the BST is **skewed**, in which the depth of call stack takes $O(h) \approx O(n)$.
 #### 3.  Iterative
-We can just convert idea 2 into an iterative implementation.
+We can just convert idea 2 into an iterative implementation. For the first one, the queue takes actually $O(1)$ because it always stores one element during searching. Hence, we can remove it to keep the implementation concise.
 ```python
 def lowestCommonAncestor(root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-    lca = root
-    while True:
-        if p.val < lca.val and q.val < lca.val:
-            lca = lca.left
-        elif p.val > lca.val and q.val > lca.val:
-            lca = lca.right
+    qu = deque([root])
+    while len(qu) > 0:
+        visited = qu.popleft()
+        if p.val < visited.val and q.val < visited.val:
+            qu.append(visited.left)
+        elif p.val > visited.val and q.val > visited.val:
+            qu.append(visited.right)
         else:
-            return lca
+            return visited
+
+
+def lowestCommonAncestor(root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+    if p.val < root.val and q.val < root.val:
+        return lowestCommonAncestor(root.left, p, q)
+    elif p.val > root.val and q.val > root.val:
+        return lowestCommonAncestor(root.right, p, q)
+    else:
+        return root
 ```
 * Time complexity: $O(h)$, where $h$ is the height of the BST.
-	* Halving the binary search tree during searching takes $O(log\ n)$.
-	* The skewed BST still takes $O(n)$.
+	* Halving the binary search tree during searching takes $O(log\ n)$ in total.
+	* The worst case happens when the BST is **skewed**, which takes $O(n)$ in total.
 * Space complexity: $O(1)$
