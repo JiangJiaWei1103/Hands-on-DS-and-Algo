@@ -5,53 +5,53 @@
 	* The number of nodes in the tree is in the range `[0, 2000]`.
 	* `-1000 <= Node.val <= 1000`
 ### Output
-Level order traversal of nodes' values of the BST.
+Level order traversal of the binary tree.
 ### Example
 ```
 Input: root = [3, 9, 20, null, null, 15, 7]
 Output: [[3], [9, 20], [15, 7]]
 ```
 ### Idea
-#### 1. BFS
-For a level order traversal, it's quite straightforward to use an iterative BFS solution. We use a queue to store nodes and visit them **level by level**.
+#### 1. Iterative - BFS
+To implement the level order traversal, the most intuitive way is to use BFS. We group elements on the same level to make sure that elements are visited **level by level.**
 ```python
 def levelOrder(root: Optional[TreeNode]) -> List[List[int]]:
     if root is None:
         return []
 
-    q = deque([root])
     res = []
+    q = deque([root])
     while len(q) > 0:
-        res.append([])
-        for _ in range(len(q)):
+        cur_lv = []
+        for i in range(len(q)):
             visited = q.popleft()
-            res[-1].append(visited.val)
-
+            cur_lv.append(visited.val)
             if visited.left is not None:
                 q.append(visited.left)
             if visited.right is not None:
                 q.append(visited.right)
-    
+
+        res.append(cur_lv)
+
     return res
 ```
 * Time complexity: $O(n)$
 	* Visiting each node in the binary tree takes $O(n)$.
 * Space complexity: $O(n)$
-	* The traversal result takes $O(n)$.
-	* A queue tracking nodes level by level takes $O(n)$.
-#### 2. DFS
-We can also use DFS to solve this problem, which seems counterintuitive at the first glance. For DFS, we use another variable `depth` to track which level the visited node is located.
+	* A queue storing nodes level by level takes $O(n)$ in the worst case, in which the binary tree is **perfect**.
+#### 2. Recursive - DFS
+In addition, DFS is also a feasible way to solve this problem. What's important is that we need to keep track of the level we're currently processing to make sure each node is recorded on the corresponding level. Note that we append an empty list to the result list each time we enter a new level.
 ```python
 def levelOrder(root: Optional[TreeNode]) -> List[List[int]]:
-    def _dfs(root: Optional[TreeNode], depth: int) -> None:
+    def _dfs(root: Optional[TreeNode], lv: int) -> None:
         if root is None:
             return None
         
-        if len(res) == depth:
+        if len(res) == lv:
             res.append([])
-        res[depth].append(root.val)
-        _dfs(root.left, depth + 1)
-        _dfs(root.right, depth + 1)
+        res[lv].append(root.val)
+        _dfs(root.left, lv + 1)
+        _dfs(root.right, lv + 1)
 
     res = []
     _dfs(root, 0)
@@ -60,6 +60,5 @@ def levelOrder(root: Optional[TreeNode]) -> List[List[int]]:
 ```
 * Time complexity: $O(n)$
 	* Visiting each node in the binary tree takes $O(n)$.
-* Space complexity: $O(n)$
-	* The traversal result takes $O(n)$.
-	* The depth of call stack takes $O(h)$ and $\approx O(n)$ in the worst case.
+* Space complexity: $O(h)$, where $h$ is the height of the binary tree.
+	* The worst case happens when the binary tree is **skewed**, which has a call stack of depth $n$.
