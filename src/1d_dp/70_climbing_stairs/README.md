@@ -27,7 +27,7 @@ Hence, the key is that the current number can be determined by the previous two 
 
 [![70-new.png](https://i.postimg.cc/DygJk04k/70-new.png)](https://postimg.cc/F7Ys09xD)
 #### 1. Recursive (TLE)
-The most naive solution is to write a recursive function to continuously solve the question with a divide-and-conquer paradigm. It's obvious the base cases are `n == 1 or n == 2`. However, there are many overlapping sub-problems, which leads to an overhead of duplicated computations.
+The most naive solution is to write a recursive function to continuously solve the question with a **divide-and-conquer** paradigm. It's obvious the base cases are `n == 1 or n == 2`. However, there are many overlapping sub-problems, which leads to an overhead of **duplicated computations**.
 
 [![70-climbing-stairs-drawio.png](https://i.postimg.cc/Z5Kc3NPn/70-climbing-stairs-drawio.png)](https://postimg.cc/6ygnxymx)]
 
@@ -62,6 +62,7 @@ def climbStairs(n: int) -> int:
 ```
 * Time complexity: $O(n)$
 	* As duplicated computations are replaced with direct retrievals from `memo`, the time complexity drops to $O(n)$.
+		* Observing the tree, it becomes linear with memoization.
 * Space complexity: $O(n)$
 	* The depth of call stack takes $O(n)$.
 #### 3.  1d DP with DP Array
@@ -92,6 +93,15 @@ def climbStairs(n: int) -> int:
 #### 4. Two Pointers for Space Optimization
 As defined in the recurrence relationship, the current solution can be determined by considering only the previous two solutions. Hence, we adopt two pointers to store these two temporary solutions on the fly.
 ```python
+def climbStairs(n: int) -> int:
+    n_2, n_1 = 1, 1  # Record n-2 and n-1
+    for i in range(2, n+1):
+        tmp = n_1
+        n_1 = n_2 + n_1
+        n_2 = tmp
+
+    return n_1
+
 def climbStairs(n: int) -> int:
     prev, cur = 1, 1
     for _ in range(2, n+1):
